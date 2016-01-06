@@ -46,8 +46,9 @@ public class TodoArrayAdapter extends ArrayAdapter<String> {
 
         LayoutInflater inflater = (LayoutInflater)
                 mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        TextView view = (TextView) inflater.inflate(R.layout.list_item, parent, false);
-        view.setText(getItem(position));
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.list_item, parent, false);
+        TextView tv = (TextView) view.findViewById(R.id.text);
+        tv.setText(getItem(position));
         return view;
     }
 
