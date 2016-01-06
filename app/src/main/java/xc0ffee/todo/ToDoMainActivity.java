@@ -1,16 +1,15 @@
 package xc0ffee.todo;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.sql.SQLException;
 
 public class ToDoMainActivity extends AppCompatActivity {
 
@@ -23,14 +22,22 @@ public class ToDoMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final ListView listview = (ListView) findViewById(R.id.list_view);
-        final ArrayList<String> entries = new ArrayList<>(Arrays.asList("Android", "Gallery", "Camera"));
-        final TodoArrayAdapter adapter = new TodoArrayAdapter(this, entries);
 
+        /* Todo: Do it in Async task */
+        Cursor cursor = null;
+        try {
+            TodoDatabase db = new TodoDatabase(this).open();
+            cursor = db.getTodos();
+        } catch (SQLException e) {
+            // Ignore!
+        }
+
+        TodoCursorAdapter adapter = new TodoCursorAdapter(this, cursor);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("NAYAN", "Im pressed");
+
             }
         });
 
@@ -38,7 +45,7 @@ public class ToDoMainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.add("Kiran");
+
             }
         });
     }
