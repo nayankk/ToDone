@@ -24,7 +24,7 @@ public class ToDoMainActivity extends AppCompatActivity {
 
         final ListView listview = (ListView) findViewById(R.id.list_view);
         final ArrayList<String> entries = new ArrayList<>(Arrays.asList("Android", "Gallery", "Camera"));
-        final TodoArrayAdapter adapter = new TodoArrayAdapter(this, R.layout.list_item, entries);
+        final TodoArrayAdapter adapter = new TodoArrayAdapter(this, entries);
 
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
