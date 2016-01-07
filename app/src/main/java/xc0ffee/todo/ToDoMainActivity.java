@@ -21,6 +21,9 @@ public class ToDoMainActivity extends AppCompatActivity {
     public final static String KEY_TASK_DATE = "due-date";
     public final static String KEY_TASK_PRIO = "task-prio";
 
+    private TodoDatabase mTodoDb = null;
+    private TodoCursorAdapter mAdapter = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +37,14 @@ public class ToDoMainActivity extends AppCompatActivity {
         /* Todo: Do it in Async task */
         Cursor cursor = null;
         try {
-            TodoDatabase db = new TodoDatabase(this).open();
-            cursor = db.getTodos();
+            mTodoDb = new TodoDatabase(this).open();
+            cursor = mTodoDb.getTodos();
         } catch (SQLException e) {
             // Ignore!
         }
 
-        TodoCursorAdapter adapter = new TodoCursorAdapter(this, cursor);
-        listview.setAdapter(adapter);
+        mAdapter = new TodoCursorAdapter(this, cursor);
+        listview.setAdapter(mAdapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -59,4 +62,15 @@ public class ToDoMainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && mTodoDb != null) {
+            TodoItem item = new TodoItem.Builder(data.getStringExtra(KEY_TASK_NAME)).
+                    description(data.getStringExtra(KEY_TASK_DESC)).
+                    dueDate(data.getStringExtra(KEY_TASK_DATE)).
+                    priority(TodoItem.Priority.values()[data.getIntExtra(KEY_TASK_PRIO,
+                            TodoItem.Priority.PRIOROTY_MEDIUM.ordinal())]).build();
+            mTodoDb.insert(item);
+        }
+    }
 }
