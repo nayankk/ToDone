@@ -17,7 +17,9 @@
         android:focusable="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:id="@+id/task_name"/>
+        android:id="@+id/task_name"
+        android:fontFamily="sans-serif"
+        android:inputType="textCapSentences"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -28,7 +30,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:id="@+id/due_date"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:fontFamily="sans-serif"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -38,7 +41,9 @@
         android:textSize="14sp"
         android:hint="@string/description"
         android:gravity="start"
-        android:id="@+id/desc"/>
+        android:id="@+id/desc"
+        android:fontFamily="sans-serif"
+        android:inputType="textCapSentences"/>
 
     <LinearLayout
         android:layout_width="match_parent"

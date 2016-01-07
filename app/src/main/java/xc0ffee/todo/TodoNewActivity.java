@@ -108,6 +108,10 @@ public class TodoNewActivity extends AppCompatActivity {
             setCbLow();
 
         mId = data.getInt(ToDoMainActivity.KEY_ID, -1);
+        if (mId == -1)
+            getSupportActionBar().setTitle(R.string.new_task);
+        else
+            getSupportActionBar().setTitle(R.string.edit_task);
     }
 
     private void setCbHigh() {

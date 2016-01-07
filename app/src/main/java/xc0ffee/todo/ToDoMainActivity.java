@@ -11,8 +11,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.sql.SQLException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class ToDoMainActivity extends AppCompatActivity {
+public class ToDoMainActivity extends AppCompatActivity
+        implements TodoCursorAdapter.OnDeleteListItem {
 
     public final static int REQUEST_CODE_NEW = 1;
     public final static int REQUEST_CODE_EDIT = 2;
@@ -37,7 +41,7 @@ public class ToDoMainActivity extends AppCompatActivity {
 
         final ListView listview = (ListView) findViewById(R.id.list_view);
 
-        /* Todo: Do all db operations in AsyncTask */
+        /* Todo: Do all db operations outside main thead */
         try {
             mTodoDb = new TodoDatabase(this).open();
             mCursor = mTodoDb.getTodos();
@@ -45,7 +49,7 @@ public class ToDoMainActivity extends AppCompatActivity {
             // Ignore!
         }
 
-        mAdapter = new TodoCursorAdapter(this, mCursor);
+        mAdapter = new TodoCursorAdapter(this, mCursor, this);
         listview.setAdapter(mAdapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -125,5 +129,23 @@ public class ToDoMainActivity extends AppCompatActivity {
         Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
         intent.putExtras(data);
         startActivityForResult(intent, REQUEST_CODE_NEW);
+    }
+
+    @Override
+    public void onDeleteListItem(final int id) {
+        final ScheduledExecutorService worker =
+                Executors.newSingleThreadScheduledExecutor();
+        worker.schedule(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTodoDb.delete(id);
+                        updateCursor();
+                    }
+                });
+            }
+        }, 1, TimeUnit.SECONDS);
     }
 }

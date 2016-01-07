@@ -109,4 +109,8 @@ public class TodoDatabase {
         values.put(KEY_PRIO, item.getPriority().ordinal());
         return mDb.update(DB_TABLE_NAME, values, "_id=?", new String[]{String.valueOf(id)});
     }
+
+    public void delete(int id) {
+        mDb.delete(DB_TABLE_NAME, "_id=?", new String[]{String.valueOf(id)});
+    }
 }
