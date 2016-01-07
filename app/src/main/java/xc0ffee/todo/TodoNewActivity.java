@@ -34,6 +34,8 @@ public class TodoNewActivity extends AppCompatActivity {
     private String mDate = null;
     private TodoItem.Priority mPriority = TodoItem.Priority.PRIOROTY_MEDIUM;
 
+    private int mId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +52,12 @@ public class TodoNewActivity extends AppCompatActivity {
         mTaskName.setText(mTask);
 
         mDescription = (EditText) findViewById(R.id.desc);
+        mDesc = data.getString(ToDoMainActivity.KEY_TASK_DESC);
+        mDescription.setText(mDesc);
 
         mDatePicker = (EditText) findViewById(R.id.due_date);
+        mDate = data.getString(ToDoMainActivity.KEY_TASK_DATE);
+        mDatePicker.setText(mDate);
         final Calendar newCalendar = Calendar.getInstance();
         mDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,8 +78,7 @@ public class TodoNewActivity extends AppCompatActivity {
         mCbHigh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCbMed.setChecked(false);
-                mCbLow.setChecked(false);
+                setCbHigh();
             }
         });
 
@@ -81,8 +86,7 @@ public class TodoNewActivity extends AppCompatActivity {
         mCbMed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCbLow.setChecked(false);
-                mCbHigh.setChecked(false);
+                setCbMed();
             }
         });
 
@@ -90,10 +94,38 @@ public class TodoNewActivity extends AppCompatActivity {
         mCbLow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCbHigh.setChecked(false);
-                mCbMed.setChecked(false);
+                setCbLow();
             }
         });
+
+        mPriority = TodoItem.Priority.values()[data.getInt(
+                ToDoMainActivity.KEY_TASK_PRIO, TodoItem.Priority.PRIOROTY_MEDIUM.ordinal())];
+        if (mPriority == TodoItem.Priority.PRIOROTY_HIGH)
+            setCbHigh();
+        else if (mPriority == TodoItem.Priority.PRIOROTY_MEDIUM)
+            setCbMed();
+        else
+            setCbLow();
+
+        mId = data.getInt(ToDoMainActivity.KEY_ID, -1);
+    }
+
+    private void setCbHigh() {
+        mCbHigh.setChecked(true);
+        mCbMed.setChecked(false);
+        mCbLow.setChecked(false);
+    }
+
+    private void setCbMed() {
+        mCbHigh.setChecked(false);
+        mCbMed.setChecked(true);
+        mCbLow.setChecked(false);
+    }
+
+    private void setCbLow() {
+        mCbHigh.setChecked(false);
+        mCbMed.setChecked(false);
+        mCbLow.setChecked(true);
     }
 
     @Override
@@ -140,6 +172,7 @@ public class TodoNewActivity extends AppCompatActivity {
             data.putExtra(ToDoMainActivity.KEY_TASK_DESC, mDesc);
             data.putExtra(ToDoMainActivity.KEY_TASK_DATE, mDate);
             data.putExtra(ToDoMainActivity.KEY_TASK_PRIO, mPriority.ordinal());
+            data.putExtra(ToDoMainActivity.KEY_ID, mId);
         }
         setResult(result, data);
         finish();
@@ -179,8 +212,8 @@ public class TodoNewActivity extends AppCompatActivity {
         mDesc = mDescription.getText().toString();
         mDate = mDatePicker.getText().toString();
         mPriority = (mCbHigh.isChecked() ? TodoItem.Priority.PRIOROTY_HIGH :
-                (mCbLow.isChecked() ? TodoItem.Priority.PRIOROTY_MEDIUM :
-                        TodoItem.Priority.PRIOROTY_LOW));
+                (mCbLow.isChecked() ? TodoItem.Priority.PRIOROTY_LOW :
+                        TodoItem.Priority.PRIOROTY_MEDIUM));
     }
 
     private boolean unsavedChangesExists() {

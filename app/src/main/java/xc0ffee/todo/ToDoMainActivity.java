@@ -14,12 +14,14 @@ import java.sql.SQLException;
 
 public class ToDoMainActivity extends AppCompatActivity {
 
-    public final static int REQUEST_CODE = 1;
+    public final static int REQUEST_CODE_NEW = 1;
+    public final static int REQUEST_CODE_EDIT = 2;
 
     public final static String KEY_TASK_NAME = "task-name";
     public final static String KEY_TASK_DESC = "task-desc";
     public final static String KEY_TASK_DATE = "due-date";
     public final static String KEY_TASK_PRIO = "task-prio";
+    public final static String KEY_ID = "position";
 
     private TodoDatabase mTodoDb = null;
     private TodoCursorAdapter mAdapter = null;
@@ -48,7 +50,7 @@ public class ToDoMainActivity extends AppCompatActivity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = (Cursor) mAdapter.getCursor();
+                Cursor cursor = mAdapter.getCursor();
                 cursor.moveToPosition(position);
                 launchTodoEditActivity(cursor);
             }
@@ -71,9 +73,20 @@ public class ToDoMainActivity extends AppCompatActivity {
                     dueDate(data.getStringExtra(KEY_TASK_DATE)).
                     priority(TodoItem.Priority.values()[data.getIntExtra(KEY_TASK_PRIO,
                             TodoItem.Priority.PRIOROTY_MEDIUM.ordinal())]).build();
-            mTodoDb.insert(item);
+            if (requestCode == REQUEST_CODE_NEW)
+                mTodoDb.insert(item);
+            else {
+                int id = data.getIntExtra(KEY_ID, -1);
+                mTodoDb.update(id, item);
+            }
             updateCursor();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTodoDb.close();
     }
 
     private void updateCursor() {
@@ -90,16 +103,27 @@ public class ToDoMainActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         data.putString(KEY_TASK_NAME, cursor.getString(
                 cursor.getColumnIndexOrThrow(TodoDatabase.KEY_TODO)));
+        data.putString(KEY_TASK_DESC, cursor.getString(
+                cursor.getColumnIndexOrThrow(TodoDatabase.KEY_DESC)));
+        data.putString(KEY_TASK_DATE, cursor.getString(
+                cursor.getColumnIndexOrThrow(TodoDatabase.KEY_DUE)));
+        data.putInt(KEY_TASK_PRIO, cursor.getInt(
+                cursor.getColumnIndexOrThrow(TodoDatabase.KEY_PRIO)));
+        data.putInt(KEY_ID, cursor.getInt(
+                cursor.getColumnIndexOrThrow(TodoDatabase.KEY_ID)));
         Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
         intent.putExtras(data);
-        startActivityForResult(intent, REQUEST_CODE);
+        startActivityForResult(intent, REQUEST_CODE_EDIT);
     }
 
     private void launchTodoEditActivity() {
         Bundle data = new Bundle();
         data.putString(KEY_TASK_NAME, new String());
+        data.putString(KEY_TASK_DATE, new String());
+        data.putString(KEY_TASK_DESC, new String());
+        data.putInt(KEY_TASK_PRIO, TodoItem.Priority.PRIOROTY_MEDIUM.ordinal());
         Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
         intent.putExtras(data);
-        startActivityForResult(intent, REQUEST_CODE);
+        startActivityForResult(intent, REQUEST_CODE_NEW);
     }
 }

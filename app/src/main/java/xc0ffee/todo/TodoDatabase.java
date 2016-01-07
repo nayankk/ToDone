@@ -14,27 +14,36 @@ public class TodoDatabase {
     private DatabaseHelper mDbHelper = null;
     private SQLiteDatabase mDb = null;
 
+    public static final String DB_TABLE_NAME = "todo_table";
+
     public static final String KEY_ID = "_id";
     public static final String KEY_TODO = "todo";
-    public static final String KEY_STATUS = "status";
-    public static final String DB_TABLE_NAME = "todo_table";
+    public static final String KEY_DESC = "desc";
+    public static final String KEY_DUE = "due";
+    public static final String KEY_PRIO = "prio";
 
     private static final String[] PROJECTION = new String[]{
             KEY_ID,
             KEY_TODO,
-            KEY_STATUS
+            KEY_DESC,
+            KEY_DUE,
+            KEY_PRIO
     };
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         private static final String DB_NAME = "todo_db";
-        private static final int DB_VERSION = 1;
+        private static final int DB_VERSION = 2;
 
         private static final String DB_CREATE =
                 "CREATE TABLE IF NOT EXISTS " + DB_TABLE_NAME +
-                        " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        " (" +
+                        KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         KEY_TODO + "," +
-                        KEY_STATUS + ");";
+                        KEY_DESC + "," +
+                        KEY_DUE + "," +
+                        KEY_PRIO +
+                        ");";
 
         private static final String DB_DROP =
                 "DROP TABLE IF EXISTS " + DB_TABLE_NAME;
@@ -77,7 +86,9 @@ public class TodoDatabase {
     public long insert(TodoItem item) {
         ContentValues values = new ContentValues();
         values.put(KEY_TODO, item.getTodoText());
-        values.put(KEY_STATUS, item.getStatus().ordinal());
+        values.put(KEY_DESC, item.getTodoDesc());
+        values.put(KEY_DUE, item.getDueDate());
+        values.put(KEY_PRIO, item.getPriority().ordinal());
         return mDb.insert(DB_TABLE_NAME, null, values);
     }
 
@@ -86,5 +97,14 @@ public class TodoDatabase {
         if (cursor != null)
             cursor.moveToFirst();
         return cursor;
+    }
+
+    public long update(int id, TodoItem item) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_TODO, item.getTodoText());
+        values.put(KEY_DESC, item.getTodoDesc());
+        values.put(KEY_DUE, item.getDueDate());
+        values.put(KEY_PRIO, item.getPriority().ordinal());
+        return mDb.update(DB_TABLE_NAME, values, "_id=?", new String[]{String.valueOf(id)});
     }
 }

@@ -4,12 +4,6 @@ public class TodoItem {
 
     private final String mTodoText;
 
-    public enum Status {
-        STATUS_TODO,
-        STATUS_DONE
-    }
-    private final Status mStatus;
-
     public enum Priority {
         PRIOROTY_LOW,
         PRIOROTY_MEDIUM,
@@ -23,20 +17,14 @@ public class TodoItem {
 
     public static class Builder {
         private final String text;
-        private Status status;
-        private String dueDate;
-        private String description;
-        private Priority priority;
+        private String dueDate = new String();
+        private String description = new String();
+        private Priority priority = Priority.PRIOROTY_MEDIUM;
 
         public Builder(String text) {
             this.text = text;
-            status = Status.STATUS_TODO;
         }
 
-        public Builder status(Status status) {
-            this.status = status;
-            return this;
-        }
 
         public Builder description(String description) {
             this.description = description;
@@ -54,13 +42,12 @@ public class TodoItem {
         }
 
         public TodoItem build() {
-            return new TodoItem(text, status, description, dueDate, priority);
+            return new TodoItem(text, description, dueDate, priority);
         }
     }
 
-    private TodoItem(String text, Status status, String description, String dueDate, Priority priority) {
+    private TodoItem(String text, String description, String dueDate, Priority priority) {
         mTodoText = text;
-        mStatus = status;
         mDescription = description;
         mDueDate = dueDate;
         mPriority = priority;
@@ -70,7 +57,16 @@ public class TodoItem {
         return mTodoText;
     }
 
-    public Status getStatus() {
-        return mStatus;
+    public String getTodoDesc() {
+        return mDescription;
     }
+
+    public String getDueDate() {
+        return mDueDate;
+    }
+
+    public Priority getPriority() {
+        return mPriority;
+    }
+
 }
