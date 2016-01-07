@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-/**
- * Created by qtc746 on 1/6/16.
- */
 public class TodoCursorAdapter extends CursorAdapter {
 
     public TodoCursorAdapter(Context context, Cursor cursor) {
@@ -28,4 +25,5 @@ public class TodoCursorAdapter extends CursorAdapter {
         int index = cursor.getColumnIndexOrThrow(TodoDatabase.KEY_TODO);
         tv.setText(cursor.getString(index));
     }
+
 }

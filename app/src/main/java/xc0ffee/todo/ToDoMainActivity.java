@@ -1,5 +1,6 @@
 package xc0ffee.todo;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,13 @@ import android.widget.ListView;
 import java.sql.SQLException;
 
 public class ToDoMainActivity extends AppCompatActivity {
+
+    public final static int REQUEST_CODE = 1;
+
+    public final static String KEY_TASK_NAME = "task-name";
+    public final static String KEY_TASK_DESC = "task-desc";
+    public final static String KEY_TASK_DATE = "due-date";
+    public final static String KEY_TASK_PRIO = "task-prio";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +53,8 @@ public class ToDoMainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
     }

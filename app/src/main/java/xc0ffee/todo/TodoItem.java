@@ -10,6 +10,13 @@ public class TodoItem {
     }
     private Status mStatus;
 
+    public enum Priority {
+        PRIOROTY_LOW,
+        PRIOROTY_MEDIUM,
+        PRIOROTY_HIGH
+    }
+    private Priority mPriority;
+
     public static class Builder {
         private final String text;
         private Status status;
