@@ -4,8 +4,10 @@
     <string name="task_name">Task Name</string>
     <string name="due_date">Set due date</string>
     <string name="description">Description</string>
-    <string name="high">High</string>
     <string name="new_task">Add a new task</string>
     <string name="exit_conf">Changes are not saved. Are you sure you want to exit?</string>
     <string name="no_task_name">Task name can not be empty.</string>
+    <string name="high">High</string>
+    <string name="medium">Medium</string>
+    <string name="low">Low</string>
 </resources>
