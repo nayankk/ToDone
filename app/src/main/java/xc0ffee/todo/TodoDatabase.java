@@ -30,6 +30,8 @@ public class TodoDatabase {
             KEY_PRIO
     };
 
+    private static final String ORDER_CLAUSE = KEY_PRIO + " DESC ";
+
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         private static final String DB_NAME = "todo_db";
@@ -93,7 +95,7 @@ public class TodoDatabase {
     }
 
     public Cursor getTodos() throws SQLException {
-        Cursor cursor = mDb.query(DB_TABLE_NAME, PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = mDb.query(DB_TABLE_NAME, PROJECTION, null, null, null, null, ORDER_CLAUSE, null);
         if (cursor != null)
             cursor.moveToFirst();
         return cursor;
