@@ -43,7 +43,12 @@ public class TodoNewActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Bundle data = getIntent().getExtras();
+
         mTaskName = (EditText) findViewById(R.id.task_name);
+        mTask = data.getString(ToDoMainActivity.KEY_TASK_NAME);
+        mTaskName.setText(mTask);
+
         mDescription = (EditText) findViewById(R.id.desc);
 
         mDatePicker = (EditText) findViewById(R.id.due_date);
@@ -96,7 +101,6 @@ public class TodoNewActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                commitData();
                 if (unsavedChangesExists())
                     showExitConfirmation();
                 else
@@ -122,7 +126,6 @@ public class TodoNewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        commitData();
         if (unsavedChangesExists())
             showExitConfirmation();
         else
@@ -130,6 +133,7 @@ public class TodoNewActivity extends AppCompatActivity {
     }
 
     private void exitApp(int result) {
+        commitData();
         Intent data = new Intent();
         if (result == RESULT_OK) {
             data.putExtra(ToDoMainActivity.KEY_TASK_NAME, mTask);
@@ -180,7 +184,9 @@ public class TodoNewActivity extends AppCompatActivity {
     }
 
     private boolean unsavedChangesExists() {
-        if (!mTask.isEmpty() || !mDate.isEmpty() || !mDesc.isEmpty())
+        if (!mTask.equals(mTaskName.getText().toString()) ||
+                !mDesc.equals(mDescription.getText().toString()) ||
+                !mDate.equals(mDatePicker.getText().toString()))
             return true;
         return false;
     }

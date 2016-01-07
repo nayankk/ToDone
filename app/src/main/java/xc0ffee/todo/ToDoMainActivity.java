@@ -23,6 +23,7 @@ public class ToDoMainActivity extends AppCompatActivity {
 
     private TodoDatabase mTodoDb = null;
     private TodoCursorAdapter mAdapter = null;
+    private Cursor mCursor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +35,22 @@ public class ToDoMainActivity extends AppCompatActivity {
 
         final ListView listview = (ListView) findViewById(R.id.list_view);
 
-        /* Todo: Do it in Async task */
-        Cursor cursor = null;
+        /* Todo: Do all db operations in AsyncTask */
         try {
             mTodoDb = new TodoDatabase(this).open();
-            cursor = mTodoDb.getTodos();
+            mCursor = mTodoDb.getTodos();
         } catch (SQLException e) {
             // Ignore!
         }
 
-        mAdapter = new TodoCursorAdapter(this, cursor);
+        mAdapter = new TodoCursorAdapter(this, mCursor);
         listview.setAdapter(mAdapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Cursor cursor = (Cursor) mAdapter.getCursor();
+                cursor.moveToPosition(position);
+                launchTodoEditActivity(cursor);
             }
         });
 
@@ -56,8 +58,7 @@ public class ToDoMainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
+                launchTodoEditActivity();
             }
         });
     }
@@ -71,6 +72,34 @@ public class ToDoMainActivity extends AppCompatActivity {
                     priority(TodoItem.Priority.values()[data.getIntExtra(KEY_TASK_PRIO,
                             TodoItem.Priority.PRIOROTY_MEDIUM.ordinal())]).build();
             mTodoDb.insert(item);
+            updateCursor();
         }
+    }
+
+    private void updateCursor() {
+        mCursor.close();
+        try {
+            mCursor = mTodoDb.getTodos();
+            mAdapter.changeCursor(mCursor);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void launchTodoEditActivity(Cursor cursor) {
+        Bundle data = new Bundle();
+        data.putString(KEY_TASK_NAME, cursor.getString(
+                cursor.getColumnIndexOrThrow(TodoDatabase.KEY_TODO)));
+        Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
+        intent.putExtras(data);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    private void launchTodoEditActivity() {
+        Bundle data = new Bundle();
+        data.putString(KEY_TASK_NAME, new String());
+        Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
+        intent.putExtras(data);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 }
