@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,7 +17,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ToDoMainActivity extends AppCompatActivity
-        implements TodoCursorAdapter.OnDeleteListItem {
+        implements TodoCursorAdapter.OnDeleteListItem,
+        TodoNewDialogFragment.TodoEditCompleteListener {
 
     public final static int REQUEST_CODE_NEW = 1;
     public final static int REQUEST_CODE_EDIT = 2;
@@ -26,6 +28,7 @@ public class ToDoMainActivity extends AppCompatActivity
     public final static String KEY_TASK_DATE = "due-date";
     public final static String KEY_TASK_PRIO = "task-prio";
     public final static String KEY_ID = "position";
+    public final static String KEY_TITLE = "title";
 
     private TodoDatabase mTodoDb = null;
     private TodoCursorAdapter mAdapter = null;
@@ -115,9 +118,10 @@ public class ToDoMainActivity extends AppCompatActivity
                 cursor.getColumnIndexOrThrow(TodoDatabase.KEY_PRIO)));
         data.putInt(KEY_ID, cursor.getInt(
                 cursor.getColumnIndexOrThrow(TodoDatabase.KEY_ID)));
-        Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
-        intent.putExtras(data);
-        startActivityForResult(intent, REQUEST_CODE_EDIT);
+        data.putString(KEY_TITLE, getResources().getString(R.string.edit_task));
+        TodoNewDialogFragment fragment = TodoNewDialogFragment.getNewInstance(data, this);
+        FragmentManager fm = getSupportFragmentManager();
+        fragment.show(fm, "fragment_edit_name");
     }
 
     private void launchTodoEditActivity() {
@@ -126,9 +130,11 @@ public class ToDoMainActivity extends AppCompatActivity
         data.putString(KEY_TASK_DATE, new String());
         data.putString(KEY_TASK_DESC, new String());
         data.putInt(KEY_TASK_PRIO, TodoItem.Priority.PRIOROTY_MEDIUM.ordinal());
-        Intent intent = new Intent(ToDoMainActivity.this, TodoNewActivity.class);
-        intent.putExtras(data);
-        startActivityForResult(intent, REQUEST_CODE_NEW);
+        data.putString(KEY_TITLE, getResources().getString(R.string.new_task));
+
+        TodoNewDialogFragment fragment = TodoNewDialogFragment.getNewInstance(data, this);
+        FragmentManager fm = getSupportFragmentManager();
+        fragment.show(fm, "fragment_edit_name");
     }
 
     @Override
@@ -147,5 +153,17 @@ public class ToDoMainActivity extends AppCompatActivity
                 });
             }
         }, 1, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onNewTodoCreated(TodoItem item) {
+        mTodoDb.insert(item);
+        updateCursor();
+    }
+
+    @Override
+    public void onTodoUpdated(int id, TodoItem item) {
+        mTodoDb.update(id, item);
+        updateCursor();
     }
 }
