@@ -9,4 +9,5 @@
     <color name="color_low">#006600</color>
 
     <color name="color_gray">#404040</color>
+    <color name="due_date_gray">#606060</color>
 </resources>

@@ -36,18 +36,23 @@ public class TodoCursorAdapter extends CursorAdapter {
         int index = cursor.getColumnIndexOrThrow(TodoDatabase.KEY_TODO);
         tv.setText(cursor.getString(index));
 
-        TextView prioTv = (TextView) view.findViewById(R.id.prio);
+        View prioInd = view.findViewById(R.id.priority);
         TodoItem.Priority priority = TodoItem.Priority.values()[
                 cursor.getInt(cursor.getColumnIndexOrThrow(TodoDatabase.KEY_PRIO))];
         if (priority == TodoItem.Priority.PRIOROTY_HIGH) {
-            prioTv.setText(R.string.high);
-            prioTv.setTextColor(ContextCompat.getColor(context, R.color.color_high));
+            prioInd.setBackgroundColor(ContextCompat.getColor(context, R.color.color_high));
         } else if (priority == TodoItem.Priority.PRIOROTY_LOW) {
-            prioTv.setText(R.string.low);
-            prioTv.setTextColor(ContextCompat.getColor(context, R.color.color_low));
+            prioInd.setBackgroundColor(ContextCompat.getColor(context, R.color.color_low));
         } else {
-            prioTv.setText(R.string.medium);
-            prioTv.setTextColor(ContextCompat.getColor(context, R.color.color_med));
+            prioInd.setBackgroundColor(ContextCompat.getColor(context, R.color.color_med));
+        }
+
+        String dueDate = cursor.getString(cursor.getColumnIndexOrThrow(TodoDatabase.KEY_DUE));
+        if (dueDate != null && !dueDate.isEmpty()) {
+            String del = ",";
+            String dayMon = dueDate.split(del)[1];
+            TextView ddTv = (TextView) view.findViewById(R.id.due_date);
+            ddTv.setText(dayMon);
         }
 
         Integer id = cursor.getInt(cursor.getColumnIndexOrThrow(TodoDatabase.KEY_ID));
