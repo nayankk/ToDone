@@ -1,6 +1,5 @@
 package xc0ffee.todo;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,9 +18,6 @@ import java.util.concurrent.TimeUnit;
 public class ToDoMainActivity extends AppCompatActivity
         implements TodoCursorAdapter.OnDeleteListItem,
         TodoNewDialogFragment.TodoEditCompleteListener {
-
-    public final static int REQUEST_CODE_NEW = 1;
-    public final static int REQUEST_CODE_EDIT = 2;
 
     public final static String KEY_TASK_NAME = "task-name";
     public final static String KEY_TASK_DESC = "task-desc";
@@ -70,24 +66,6 @@ public class ToDoMainActivity extends AppCompatActivity
                 launchTodoEditActivity();
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && mTodoDb != null) {
-            TodoItem item = new TodoItem.Builder(data.getStringExtra(KEY_TASK_NAME)).
-                    description(data.getStringExtra(KEY_TASK_DESC)).
-                    dueDate(data.getStringExtra(KEY_TASK_DATE)).
-                    priority(TodoItem.Priority.values()[data.getIntExtra(KEY_TASK_PRIO,
-                            TodoItem.Priority.PRIOROTY_MEDIUM.ordinal())]).build();
-            if (requestCode == REQUEST_CODE_NEW)
-                mTodoDb.insert(item);
-            else {
-                int id = data.getIntExtra(KEY_ID, -1);
-                mTodoDb.update(id, item);
-            }
-            updateCursor();
-        }
     }
 
     @Override
