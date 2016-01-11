@@ -20,6 +20,7 @@ Completed user stories:
  * [x] Optional: Persistent storage is implemented via CursorAdapter and todo items are stored in Sqlite database.
  * [x] Optional: Do not allow saving an empty todo.
  * [x] Optional: Show a confirmation dialog when user attemps to navigate out of new todo screen without saving the changes.
+ * [x] Optional: Show the due date of to-do items in main UI list
  
 Walkthrough of all user stories:
 
