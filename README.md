@@ -2,26 +2,22 @@
 
 **ToDone** is an android app that allows building a todo list and basic todo items management functionality including adding new items, editing and deleting an existing item.
 
-Submitted by: **Nayan Kumar K**
+User stories:
 
-Time spent: 12 hours spent in total
-
-Completed user stories:
-
- * [x] Required: User can add a todo item to the todo list.
- * [x] Required: User can remove a todo item from the todo list.
- * [x] Required: User can edit a todo item from the todo list.
- * [x] Required: Todo's added by user are persistent and app is able to retrieve them on app restart.
- * [x] Optional: User can add notes to a todo item.
- * [x] Optional: User can set the priority of a todo item. Priority will be displayed in the main list view.
- * [x] Optional: Todo items in list are sorted per their priority.
- * [x] Optional: User can set the completeion due date of todo items.
- * [x] Optional: UI / UX uses Material Design guidelines.
- * [x] Optional: Persistent storage is implemented via CursorAdapter and todo items are stored in Sqlite database.
- * [x] Optional: Do not allow saving an empty todo.
- * [x] Optional: Show a confirmation dialog when user attempts to navigate out of new todo screen without saving the changes.
- * [x] Optional: Show the due date of to-do items in main UI list.
- * [x] Optional: Use DialogFragment instead of Activity for todo edit/new screen.
+ * User can add a todo item to the todo list.
+ * User can remove a todo item from the todo list.
+ * User can edit a todo item from the todo list.
+ * Todo's added by user are persistent and app is able to retrieve them on app restart.
+ * User can add notes to a todo item.
+ * User can set the priority of a todo item. Priority will be displayed in the main list view.
+ * Todo items in list are sorted per their priority.
+ * User can set the completeion due date of todo items.
+ * UI / UX uses Material Design guidelines.
+ * Persistent storage is implemented via CursorAdapter and todo items are stored in Sqlite database.
+ * Do not allow saving an empty todo.
+ * Show a confirmation dialog when user attempts to navigate out of new todo screen without saving the changes.
+ * Show the due date of to-do items in main UI list.
+ * Use DialogFragment instead of Activity for todo edit/new screen.
  
 Walkthrough of all user stories:
 
